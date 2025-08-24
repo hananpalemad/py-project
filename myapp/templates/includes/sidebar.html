@@ -1,0 +1,27 @@
+<div class="sidebar">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Categories</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled">
+                {% for category in categories %}
+                <li class="mb-2">
+                    <a href="{% url 'category_posts' category.slug %}" class="text-decoration-none">
+                        <i class="fas fa-folder me-2"></i>{{ category.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>About</h5>
+        </div>
+        <div class="card-body">
+            <p>Welcome to our Django blog! We share amazing content about web development, programming, and technology.</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>My Bookmarked Posts</h2>
+    
+    {% if bookmarks %}
+    <div class="row">
+        {% for bookmark in bookmarks %}
+        <div class="col-md-6 mb-4">
+            <div class="card post-card">
+                {% if bookmark.post.featured_image %}
+                <img src="{{ bookmark.post.featured_image.url }}" class="card-img-top" alt="{{ bookmark.post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ bookmark.post.title }}</h5>
+                    <p class="card-text">{{ bookmark.post.excerpt|truncatewords:20 }}</p>
+                    <a href="{% url 'post_detail' bookmark.post.slug %}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You haven't bookmarked any posts yet.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

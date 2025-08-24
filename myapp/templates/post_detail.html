@@ -1,0 +1,26 @@
+<!-- Add this near the post title -->
+<div class="d-flex gap-2 mb-3">
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'like_post' post.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger">
+            <i class="fas fa-heart {% if user_liked %}text-danger{% endif %}"></i>
+            Like ({{ like_count }})
+        </button>
+    </form>
+    <form method="post" action="{% url 'bookmark_post' post.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-primary">
+            <i class="fas fa-bookmark {% if user_bookmarked %}text-primary{% endif %}"></i>
+            Bookmark
+        </button>
+    </form>
+    {% else %}
+    <a href="{% url 'login' %}" class="btn btn-outline-danger">
+        <i class="fas fa-heart"></i> Like ({{ like_count }})
+    </a>
+    <a href="{% url 'login' %}" class="btn btn-outline-primary">
+        <i class="fas fa-bookmark"></i> Bookmark
+    </a>
+    {% endif %}
+</div>

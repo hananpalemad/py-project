@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Django Blog{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Category Header -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <h1 class="display-5 fw-bold text-primary">{{ category.name }}</h1>
+                    <p class="lead">Browse all posts in this category</p>
+                    <span class="badge bg-primary fs-6">
+                        {{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }} found
+                    </span>
+                </div>
+            </div>
+
+            <!-- Posts Grid -->
+            {% if page_obj %}
+            <div class="row">
+                {% for post in page_obj %}
+                <div class="col-md-6 mb-4">
+                    <div class="card post-card h-100">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <span class="badge category-badge mb-2">{{ post.category.name }}</span>
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.excerpt|truncatewords:20|default:post.content|truncatewords:20 }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-user"></i> {{ post.author.username }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> {{ post.created_at|date:"M d, Y" }}
+                                </small>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-eye"></i> {{ post.views }} views
+                                </small>
+                                <small class="text-muted">
+                                    <i class="fas fa-comments"></i> {{ post.comments.count }} comments
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer bg-transparent">
+                            <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary btn-sm w-100">
+                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <!-- No Posts Message -->
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                    <h3>No posts found in this category</h3>
+                    <p class="text-muted">There are no published posts in the "{{ category.name }}" category yet.</p>
+                    <a href="{% url 'home' %}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Sidebar -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>About This Category
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>Explore all posts categorized under <strong>"{{ category.name }}"</strong>. This category contains {{ page_obj.paginator.count }} post{{ page_obj.paginator.count|pluralize }}.</p>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories List -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-folder me-2"></i>All Categories
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for cat in categories %}
+                        <a href="{% url 'category_posts' cat.slug %}" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if cat.slug == category.slug %}active{% endif %}">
+                            {{ cat.name }}
+                            <span class="badge bg-primary rounded-pill">{{ cat.post_set.count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Posts -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-fire me-2"></i>Popular Posts
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% with popular_posts=category.post_set.filter.is_published=True|order_by:'-views'|slice:":5" %}
+                    {% if popular_posts %}
+                    <div class="list-group">
+                        {% for post in popular_posts %}
+                        <a href="{% url 'post_detail' post.slug %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ post.title|truncatewords:6 }}</h6>
+                                <small class="text-muted">{{ post.views }} views</small>
+                            </div>
+                            <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No popular posts yet.</p>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.category-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 0.8rem;
+}
+
+.post-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.post-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+</style>
+{% endblock %}
