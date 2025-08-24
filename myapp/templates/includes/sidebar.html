@@ -1,27 +1,115 @@
 <div class="sidebar">
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Categories</h5>
+    <!-- Categories Section -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-gradient-primary text-white py-3">
+            <h5 class="mb-0 fw-semibold">
+                <i class="fas fa-tags me-2"></i>Categories
+            </h5>
         </div>
-        <div class="card-body">
-            <ul class="list-unstyled">
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
                 {% for category in categories %}
-                <li class="mb-2">
-                    <a href="{% url 'category_posts' category.slug %}" class="text-decoration-none">
-                        <i class="fas fa-folder me-2"></i>{{ category.name }}
-                    </a>
-                </li>
+                <a href="{% url 'category_posts' category.slug %}" 
+                   class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-folder text-primary me-3"></i>
+                        <span class="fw-medium">{{ category.name }}</span>
+                    </div>
+                    <span class="badge bg-primary rounded-pill px-2 py-1">{{ category.post_set.count }}</span>
+                </a>
                 {% endfor %}
-            </ul>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h5>About</h5>
+    <!-- About Section -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header bg-gradient-success text-white py-3">
+            <h5 class="mb-0 fw-semibold">
+                <i class="fas fa-info-circle me-2"></i>About
+            </h5>
         </div>
         <div class="card-body">
-            <p>Welcome to our Django blog! We share amazing content about web development, programming, and technology.</p>
+            <p class="mb-3 text-muted">Welcome to our blog! We share amazing content about web development, programming, technology, knowledge and inspiration through quality content.</p>
+            <div class="text-center">
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <i class="fab fa-django text-success fa-lg"></i>
+                </div>
+                <small class="d-block text-muted mt-2">Powered by Django</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Connect -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-gradient-info text-white py-3">
+            <h5 class="mb-0 fw-semibold">
+                <i class="fas fa-rocket me-2"></i>Connect
+            </h5>
+        </div>
+        <div class="card-body text-center">
+            <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                <i class="fab fa-instagram fa-2x text-danger"></i>
+            </div>
+            <p class="mb-2 fw-medium">Instagram</p>
+            <a href="https://instagram.com/hanan_p_t_" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-4">
+                @hanan_p_t_
+            </a>
+            <hr class="my-3">
+            <p class="mb-2 fw-medium">GitHub</p>
+            <a href="https://github.com/hananpalemad" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill px-4">
+                <i class="fab fa-github me-1"></i>hananpalemad
+            </a>
         </div>
     </div>
 </div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%) !important;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    border: none;
+}
+
+.list-group-item {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f8f9fa !important;
+}
+
+.list-group-item:last-child {
+    border-bottom: none !important;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+    padding-left: 25px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+</style>
